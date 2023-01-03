@@ -1,7 +1,7 @@
 function [S] = SPM_Discrete_Dom(Model,Rn,Rn_value,Ln,Ln_value)
 %{
 
-DISCRETIZATION FUNCTION: GIT tests
+DISCRETIZATION FUNCTION:
 
     % --- Model     >>>  Upload the struct from the model
     % --- Rn        >>>  User Defined Positive Particle Grid spatial discretization difference NAME (if not uses default)
