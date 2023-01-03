@@ -1,0 +1,13 @@
+clc
+clear all
+
+Model.a = 1;
+
+Model.Param_Val = Load_Chem_Param("Chen2020");
+
+Model.Domain = SPM_Discrete_Dom(Model,"R_p_Grid",20,"X_p_Grid",30);
+
+Model.Solution = SPM_FVM();
+
+find(Model.Param_Val(1).Parameter=="Far")
+cha 

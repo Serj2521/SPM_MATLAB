@@ -1,0 +1,10 @@
+function [S]=Load_Chem_Param(Chem)
+
+   % --- Chem - Name of the chemistry file to be uploaded
+   % --- NOTE: 
+
+    run(append(Chem,'.m'))    % --- Load Chemical Cell Parameters
+
+    S = struct('Parameter',Param_Val_M(:,1),'Value',Param_Val_M(:,2));
+
+end

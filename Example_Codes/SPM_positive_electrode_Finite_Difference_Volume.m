@@ -1,0 +1,78 @@
+clc
+clear all
+
+R = 5.22e-6;             % Particle Radius [m]
+Cmax = 63104;            % [mol/m^3]
+F = 96487;               % Faraday Constant [C/mol]
+A = 0.1027;              % Cell Cross-sectional area [m^2]
+L = 7.56e-5;             % Electrode thickness [m]
+Epsilon=0.665;           % Volume fraction of the solid electrode material in the porous electrode [%]
+Iapp=5;                  % Applied Current [A]
+C0 = 17038;              % Initial concentration [mol/m^3] = min concentration
+D = 4e-15;               % Solid Diffusivity [m^2/sec]
+
+j0 = Iapp*R/F/3/Epsilon/A/L;   % Lithium Flux [mol/m^2/sec]  or 35810*R/3/3568 (for total time varying mol) 
+
+
+jk = [j0*ones(1,3568), zeros(1,3600)];  % discharge and rest
+jk = [-jk jk];                          % discharge and rest, charge and rest
+
+%Simulation Control
+tic
+Nr = 20;                                              % Number of shells radially
+dR = R/Nr;                                            % Width of each shell
+Sa = 4*pi*(R*(1:Nr)/Nr).^2;                           % Outer surface area of each shell
+dV = (4/3)*pi*((R*(1:Nr)/Nr).^3-(R*(0:Nr-1)/Nr).^3);  % Volume of each shell
+dt = 1;                                               % time steps of 1 second
+
+c = C0*ones(1,Nr);      % Initialize concentration profile versus "r" dimension
+c_p = c;
+cse = zeros(size(jk));  %Concentration at surface
+cse(1)= C0;
+ 
+for timestep = 1:length(jk),
+    N = -D*diff(c)/dR;  % flux at surfaces between "bins"
+    M = N.*Sa(1:end-1); % total moles crossing surfaces
+    c = c + ([0 M] - [M 0])*dt./dV; %Conc change via diffusion
+    c(end) = c(end) - jk(timestep)*Sa(end)*dt/dV(end); %at boundary
+    cse(timestep+1) = c(end);
+    c_p(timestep+1,:) = c;
+end
+toc
+Max_CSE=max(cse)
+Min_CSE=min(cse)
+
+%Rerpesentation
+
+R_p=linspace(0,R,Nr);
+t_rep=linspace(0,length(jk),250); % Define time representation
+
+for i=1:length(t_rep)
+    k(i)=find(0:length(jk)>=t_rep(i),1);
+    c_p_surfrep(i,:) = c_p(k(i),:);
+end
+
+subplot(2,2,[1,2])
+    surf(R_p,t_rep/3600,c_p_surfrep,'facecolor','b','facealpha',0.3,'edgecolor',[1 0 1])
+    grid('on');
+    xlabel('Distance [m]','interpreter','latex'); ylabel('Time [h]','interpreter','latex'); zlabel('Concentration [mol/m3]','interpreter','latex');
+    title('Time vs R Positive particle Concentration [mol/m3]','interpreter','latex');
+    xlim([R_p(1) R_p(end)]);
+    ylim([t_rep(1)/3600 t_rep(end)/3600]);
+    zlim([0.7*C0 1.1*Cmax]);
+
+subplot(2,2,3)
+    plot(((0:length(jk))/3600),cse/1000);
+    title('Surface concentration of particle')
+    xlabel('Time(h)');ylabel('Concentration (kmol m^{-3})')
+
+    for j = 1:length(t_rep)
+        subplot(2,2,4)
+        plot(R_p,c_p_surfrep(j,:),'r',LineWidth=2); xlabel('Distance [m]','interpreter','latex'); ylabel('Concentration [mol/m3]','interpreter','latex');
+        title(['Concentration Versus Distance at Time = ' num2str(round(t_rep(j)/3600,2)) ' h']); 
+        grid('on'); axis([R_p(1) R_p(end) 0.7*C0 1.1*Cmax]); drawnow; %pause(1);
+    end
+% 5*R*dR/(D*96487*0.665*3*7.56e-5)
+%5/7.56e-5
+%0.9/2.8e-2/10
+%j0*3*0.665/0.1027/7.56e-5 %j0=I*R/96487/3/0.665/0.1027/7.56e-5
