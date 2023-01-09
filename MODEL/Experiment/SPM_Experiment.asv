@@ -58,9 +58,8 @@ EXP_Type_Steps={};
                     %--Stop voltage condition
                     elseif strfind(Exp_M(i),'until voltage reach')>0
                       
-                        EXP_t_Steps=[EXP_t_Steps;0];                                                     % - Concatenate empty time array
-                        EXP_Array_Steps=[EXP_Array_Steps;2];                                             % - Concatenate current in cell struct   
-                        EXP_Type_Steps=[EXP_Type_Steps;'Voltage limit constraint'];                      % - Concatenate type in cell struct
+                        EXP_t_Steps=[EXP_t_Steps;0];                               % - Concatenate empty time array
+                        EXP_Array_Steps=[EXP_Array_Steps;2];                               % - Concatenate current in cell struct  
 
                     else
     
@@ -100,9 +99,9 @@ EXP_Type_Steps={};
                     %--Stop voltage condition
                     elseif strfind(Exp_M(i),'until voltage reach')>0
 
-                        EXP_t_Steps=[EXP_t_Steps;0];                                                     % - Concatenate empty time array
-                        EXP_Array_Steps=[EXP_Array_Steps;2];                                             % - Concatenate current in cell struct   
-                        EXP_Type_Steps=[EXP_Type_Steps;'Voltage limit constraint'];                      % - Concatenate type in cell struct
+                        EXP_t_Steps=[EXP_t_Steps;0];                                                                      % - Concatenate empty time array
+                        EXP_Array_Steps=[EXP_C_Steps;2];                                                                  % - Concatenate current in cell struct   
+                        EXP_Type_Steps=[EXP_Type_Steps;'Experimen'];               % - Concatenate type in cell struct
                     else
     
                         fprintf(['[WARNING]: Error in experiment step: ']) 

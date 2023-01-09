@@ -1,15 +1,21 @@
-function [S] = SPM_Discrete_Dom(Model,Rn,Rn_value,Ln,Ln_value)
+function [S] = SPM_Discrete_Dom(PARAM,Rn,Rn_value,Ln,Ln_value)
 %{
 
 DISCRETIZATION FUNCTION:
 
-    % --- Model     >>>  Upload the struct from the model
+    % --- PARAM     >>>  Upload the parameters struct branch from the model
     % --- Rn        >>>  User Defined Positive Particle Grid spatial discretization difference NAME (if not uses default)
     % --- Rn_value  >>>  User Defined Positive Particle Grid spatial discretization difference VALUE (if not uses default)
     % --- Ln        >>>  User Defined Positive Electrode Spatial Grid spatial discretization difference NAME (if not uses default)
     % --- Ln_value  >>>  User Defined Positive Electrode Spatial Grid spatial discretization difference NAME (if not uses default)
 
 %}
+
+%TO DO LIST:
+ %-- Add negative electrode domain
+ %-- Add separator domain
+ %-- Add deffault values
+ %-- Keep Updated Paramm_sets list for comments
 
    % --- Function variables check 
 
@@ -21,36 +27,17 @@ DISCRETIZATION FUNCTION:
     
     exist Ln_value;     Ln_N_Check = logical(ans);     % --- Check Spatial Positive electrode grid domain input value
 
-
-    if isfield (Model,'Param_Val') == true                  % --- Check if Param values is loaded
+    if isfield (PARAM,'Parameter') == true && isfield (PARAM,'Value') == true       % --- Check if Parameters and values are loaded
         
         %--- Positive Particle Radius defining loop
 
-        for i=1:length(Model.Param_Val)
-            
-            Model.Param_Val(i).Parameter=="Positive Particle Radius [m]";
-            
-            if ans==true
+        R_p=Find_Param_Value(PARAM,"Positive Particle Radius [m]");
 
-                R_p=Model.Param_Val(i).Value;
-
-            end
-        
-        end
         
         % --- Positive Electrode L defining loop
 
-        for i=1:length(Model.Param_Val)
-            
-            Model.Param_Val(i).Parameter=="Positive Electrode thickness [m]";
-            
-            if ans==true
+        L_p=Find_Param_Value(PARAM,"Positive Electrode thickness [m]");
 
-                L_p=Model.Param_Val(i).Value;
-
-            end
-        
-        end
 
             % --- Positive particle Radius Discretization
             
@@ -91,7 +78,7 @@ DISCRETIZATION FUNCTION:
     else
         
         fprintf(['[WARNING]: No parameter values detected to define model spatial domain...\n' ...
-            'Please, select one of the following available:\n\n' ...
+            'Please, add the corresponding function and select one of the following parameter sets available:\n\n' ...
             '"Chen2020"\n'])
         
     end

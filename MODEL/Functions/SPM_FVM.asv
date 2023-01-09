@@ -77,8 +77,5 @@ function [S] = SPM_FVM(PARAM,DOM,EXP,Init)
         C0_p=C_init_p*ones(1,length(R_p));
        
         % - Solid Negative Particle Initial concentration distribution
-        %C_init_n=interp1(100:-50:0,C_min_n:(C_max_n-C_min_n)/2:C_max_n,In_SOC,"linear");
-        %C0_n=C_init_n*ones(1,length(R_n));
-
 
 end
