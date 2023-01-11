@@ -9,6 +9,8 @@ function [X]=Find_Param_Value(S,string_f)
 
         -      X    >>>  
     %}
+   %TO DO LIST:
+    %-- Add error debuging message when not found parameter
     
         for i=1:length(S)
             
@@ -17,8 +19,6 @@ function [X]=Find_Param_Value(S,string_f)
             if ans==true
 
                 X=S(i).Value;
-
-            end
         
         end
 

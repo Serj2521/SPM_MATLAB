@@ -19,9 +19,9 @@ jk = [-jk jk];                          % discharge and rest, charge and rest
 
 %Simulation Control
 tic
-Nr = 20;                                              % Number of shells radially
+Nr = 19;                                              % Number of shells radially Total vector length Nr+1 >>> 0:dR:R
 dR = R/Nr;                                            % Width of each shell
-Sa = 4*pi*(R*(1:Nr)/Nr).^2;                           % Outer surface area of each shell
+Sa = 4*pi*(R*(1:Nr)/Nr).^2                           % Outer surface area of each shell
 dV = (4/3)*pi*((R*(1:Nr)/Nr).^3-(R*(0:Nr-1)/Nr).^3);  % Volume of each shell
 dt = 1;                                               % time steps of 1 second
 

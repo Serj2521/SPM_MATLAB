@@ -26,6 +26,9 @@ function [S] = SPM_Experiment(MODE,Exp_M,dt)
  %-- Define CC/CV conditions
  %-- Develop Excel read mode t,App_Curr
  %-- C_rate and mA condition implement
+ %-- add switching Units condition (seconds,voltage)
+ %-- Add (hours,mV...) condition
+tic
 
 %INITIALIZE CELLS
 EXP_t_Steps={};
@@ -39,13 +42,16 @@ EXP_Type_Steps={};
 
         for i=1:length(Exp_M)
             
+
+
             % CHARGE Applied Current vector generation condition
 
-            if strfind(Exp_M(i),'Charge')==1
+            if strfind(Exp_M(i),"Charge")==1
                 if strfind(Exp_M(i),'A')>0
                     
+
                     %--Stop time condition
-                    if strfind(Exp_M(i),'until time reach')>0
+                    if strfind(Exp_M(i),"until time reach")>0
     
                         Step_input_data=str2double(regexp(Exp_M(i),'(?<!\d)(\d)+(?!\d)','match'));    % - Extract the number from each step
                         Step_Time_Vector=0:dt:Step_input_data(2);                                       % - Generates Time Vector
@@ -55,12 +61,13 @@ EXP_Type_Steps={};
                         EXP_Array_Steps=[EXP_Array_Steps;Step_Current_Vector];                                            % - Concatenate current in cell struct
                         EXP_Type_Steps=[EXP_Type_Steps;'Discrete defined Time and Current for experiment'];               % - Concatenate type in cell struct
                     
+
                     %--Stop voltage condition
-                    elseif strfind(Exp_M(i),'until voltage reach')>0
+                    elseif strfind(Exp_M(i),"until voltage reach")>0
                       
                         EXP_t_Steps=[EXP_t_Steps;0];                                                     % - Concatenate empty time array
                         EXP_Array_Steps=[EXP_Array_Steps;2];                                             % - Concatenate current in cell struct   
-                        EXP_Type_Steps=[EXP_Type_Steps;'Voltage limit constraint'];                      % - Concatenate type in cell struct
+                        EXP_Type_Steps=[EXP_Type_Steps;"Voltage limit constraint"];                      % - Concatenate type in cell struct
 
                     else
     
@@ -70,10 +77,10 @@ EXP_Type_Steps={};
     
                     end
                 
-                elseif strfind(Exp_M(i),'mA')>0
+                elseif strfind(Exp_M(i),"mA")>0
                     %--mili-Amperes condition
 
-                elseif strfind(Exp_M(i),'C')>0
+                elseif strfind(Exp_M(i),"C")>0
                     %--C-rate condition
                 else
                         fprintf(['[WARNING]: Error in experiment step: ']) 
@@ -81,24 +88,28 @@ EXP_Type_Steps={};
                         fprintf(['. Please, check syntax.\n\n'])                     
                 end
 
+
+
             % DISCHARGE Applied Current vector generation condition
 
-            elseif strfind(Exp_M(i),'Discharge')==1
-                if strfind(Exp_M(i),'A')>0
+            elseif strfind(Exp_M(i),"Discharge")==1
+                if strfind(Exp_M(i),"A")>0
                    
+
                     %--Stop time condition
-                    if strfind(Exp_M(i),'until time reach')>0
+                    if strfind(Exp_M(i),"until time reach")>0
                    
                         Step_input_data=str2double(regexp(Exp_M(i),'(?<!\d)(\d)+(?!\d)','match'));    % - Extract the number from each step
                         Step_Time_Vector=0:dt:Step_input_data(2);                                       % - Generates Time Vector
-                        Step_Current_Vector=-Step_input_data(1)*ones(Step_input_data(2),1);            % - Generates Current Vector
+                        Step_Current_Vector=Step_input_data(1)*ones(Step_input_data(2),1);            % - Generates Current Vector
 
                         EXP_t_Steps=[EXP_t_Steps;Step_Time_Vector];                                                       % - Concatenate  time in cell struct
                         EXP_Array_Steps=[EXP_Array_Steps;Step_Current_Vector];                                            % - Concatenate current in cell struct
                         EXP_Type_Steps=[EXP_Type_Steps;'Discrete defined Time and Current for experiment'];               % - Concatenate type in cell struct
                     
+
                     %--Stop voltage condition
-                    elseif strfind(Exp_M(i),'until voltage reach')>0
+                    elseif strfind(Exp_M(i),"until voltage reach")>0
 
                         EXP_t_Steps=[EXP_t_Steps;0];                                                     % - Concatenate empty time array
                         EXP_Array_Steps=[EXP_Array_Steps;2];                                             % - Concatenate current in cell struct   
@@ -111,6 +122,7 @@ EXP_Type_Steps={};
                     
                     end
                 
+
                 elseif strfind(Exp_M(i),'mA')>0
                     %--mili-Amperes condition
 
@@ -122,10 +134,12 @@ EXP_Type_Steps={};
                         fprintf(['. Please, check syntax.\n\n']) 
                 end
 
+
+
             % REST Applied Current vector generation condition   
 
-            elseif strfind(Exp_M(i),'Rest')==1
-                if (isempty(strfind(Exp_M(i),'until time reach')>0) || isempty(strfind(Exp_M(i),'seconds')>0))
+            elseif strfind(Exp_M(i),"Rest")==1
+                if (isempty(strfind(Exp_M(i),"until time reach")>0) || isempty(strfind(Exp_M(i),'seconds')>0))
                 
                     fprintf(['[WARNING]: Error in experiment step: ']) 
                     fprintf('%i',i)
@@ -153,8 +167,21 @@ EXP_Type_Steps={};
         S.Mode=1; %-Mode: Deffault Flag
         fprintf(['[COMMENT]: Deffault experiment set succesfully\n'])
 
+
+
+
     elseif MODE=="Excel"
         %xlsread("Experiment\EXCEL_Experiment_UPLOAD_example.xlsx")
         MOD=2; %-Mode Excel Flag
+
+
+
+
+    else
+        fprintf(['[WARNING]: Typing error in general function. Please, check syntax.\n\n'])        
     end
+
+toc
+fprintf(['\n\n']) 
+
 end

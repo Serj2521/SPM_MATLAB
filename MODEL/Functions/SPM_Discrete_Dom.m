@@ -17,6 +17,7 @@ DISCRETIZATION FUNCTION:
  %-- Add deffault values
  %-- Keep Updated Paramm_sets list for comments
 
+ tic
    % --- Function variables check 
 
     exist Rn;           Rn_Check = logical(ans);       % --- Check Spatial Positive Particle grid domain input name
@@ -82,5 +83,8 @@ DISCRETIZATION FUNCTION:
             '"Chen2020"\n'])
         
     end
+
+toc
+fprintf(['\n\n']) 
     
 end
