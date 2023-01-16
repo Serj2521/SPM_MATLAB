@@ -1,17 +1,20 @@
 clc
 clear all
 
+   %TO DO LIST:
+    %-- Simulate bit resolution lost from 32bit float to 8bit 
+
 R = 5.22e-6;             % Particle Radius [m]
 Cmax = 63104;            % [mol/m^3]
 F = 96487;               % Faraday Constant [C/mol]
 A = 0.1027;              % Cell Cross-sectional area [m^2]
 L = 7.56e-5;             % Electrode thickness [m]
-Epsilon=0.665;           % 
+Epsilon=0.665;           % Volume fraction of the solid electrode material in the porous electrode [%]
 Iapp=5;                  % Applied Current [A]
 C0 = 17038;              % Initial concentration [mol/m^3] = min concentration
 D = 4e-15;               % Solid Diffusivity [m^2/sec]
 
-j0 = Iapp*R/F/3/0.665/A/L;   % Lithium Flux [mol/m^2/sec]  or 35810*R/3/3568 (for total time varying mol) 
+j0 = Iapp*R/F/3/Epsilon/A/L;   % Lithium Flux [mol/m^2/sec]  or 35810*R/3/3568 (for total time varying mol) 
 
 
 jk = [j0*ones(1,3568), zeros(1,3600)];  % discharge and rest
@@ -19,9 +22,9 @@ jk = [-jk jk];                          % discharge and rest, charge and rest
 
 %Simulation Control
 tic
-Nr = 20;                                              % Number of shells radially
+Nr = 19;                                              % Number of shells radially Total vector length Nr+1 >>> 0:dR:R
 dR = R/Nr;                                            % Width of each shell
-Sa = 4*pi*(R*(1:Nr)/Nr).^2;                           % Outer surface area of each shell
+Sa = 4*pi*(R*(1:Nr)/Nr).^2                           % Outer surface area of each shell
 dV = (4/3)*pi*((R*(1:Nr)/Nr).^3-(R*(0:Nr-1)/Nr).^3);  % Volume of each shell
 dt = 1;                                               % time steps of 1 second
 

@@ -41,7 +41,7 @@ function [S] = SPM_FVM(PARAM,DOM,EXP,Init)
                     %-- dx
                        POS_P.dx=diff(POS_P.L(1:2)); 
 
-     %--- Obtain values to parametrize the General Constants
+     %--- Obtain values to parametrize the General Constants and generate CNT struct to group constant parameters
 
     
              %--- Faraday Constant defining Function
@@ -53,7 +53,7 @@ function [S] = SPM_FVM(PARAM,DOM,EXP,Init)
                 CNT.R=Find_Param_Value(PARAM,"Molar Gas Constant [J⋅K^−1⋅mol^−1]");
 
 
-     %--- Obtain values and functions to parametrize POSITIVE electrode   
+     %--- Obtain values and functions to parametrize POSITIVE electrode and generate POS_P struct to group electrode parameters  
 
     
              %--- Positive Electrode cross-section defining Function

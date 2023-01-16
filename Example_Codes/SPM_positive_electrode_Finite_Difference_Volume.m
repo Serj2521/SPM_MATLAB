@@ -1,6 +1,10 @@
 clc
 clear all
 
+   %TO DO LIST:
+    %-- Simulate bit resolution lost from 32bit float to 8bit, test single() function
+    %-- https://es.mathworks.com/help/matlab/matlab_prog/floating-point-numbers.html
+
 R = 5.22e-6;             % Particle Radius [m]
 Cmax = 63104;            % [mol/m^3]
 F = 96487;               % Faraday Constant [C/mol]

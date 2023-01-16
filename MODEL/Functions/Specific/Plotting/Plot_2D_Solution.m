@@ -1,0 +1,120 @@
+function Plot_2D_Solution(SOL_struct,DOM_struct,M_str)
+    %{
+    DESCRIPTION: Parameter values find function for Battery parameter set Model Structs
+        -      SOL_struct    >>>  Load the Solution struct with two fields
+                         >> Time
+                         >> Current
+                         >> Concentration     
+
+        -      Data_res      >>>  User defined Data resolution in % [integer] for plots
+
+        -       M_str        >>>  User defined specific plots                
+    %}
+   %TO DO LIST:
+    %-- Add secondary units
+
+    tic
+
+        %--- Extract solutions
+                SOL_cell=struct2cell(SOL_struct);
+                [t,I_app,Csp] = SOL_cell{:};
+
+                DOM_cell=struct2cell(DOM_struct);
+                [Rsp,Lsp] = DOM_cell{:};
+            
+            %-- Check functions
+                exist t; 
+                time_check=ans;
+                exist I_app; 
+                Iapp_check=ans;
+                exist Csp; 
+                Csp_check=ans;
+                exist M_str; 
+                str_check=ans;
+     
+
+        %--- Condition
+                if time_check==1 && Iapp_check && Csp_check==1
+
+
+                    if str_check==1         %-- User's specified plot operation mode condition
+                        
+                        Graph_N =length(M_str);  %-- Total Graph Number to plot in API
+                    
+                    %--- Figure Initialization
+                        fig = uifigure('Name','Model 2D-Plots','Position',[50 50 825 625]);
+
+                    %--- Graph Initialization
+                        ax = uiaxes(fig,'Position',[150 100 450 450]);
+                        p=plot(ax,Rsp(2:end),Csp(1,:));
+                        xlim(ax,[Rsp(2) Rsp(end)])
+                        ylim(ax,[min(Csp,[],'all') max(Csp,[],'all')])
+                        xlabel(ax,'Positive Particle Radius [m]')
+                        ylabel(ax,'$$Concentration   \frac{mol}{m^3}$$','interpreter','latex')
+                        title(ax,'$$\textbf{X-averaged Lithium Positive Particle Concentration} \frac{mol}{m^3}$$','interpreter','latex')
+
+                    %--- Slider Initialization
+    
+                        sld = uislider(fig,...
+                        'Position',[200 75 400 3],...
+                        'ValueChangedFcn',@(sld,event) updateGraph(sld,SOL_struct,DOM_struct,fig,ax));
+                        sld.Limits = [0 t(end)];
+
+                     %--- Sli   
+                        for i=1:Graph_N
+                            if strfind(M_str(i),"X-Averaged Positive Particle Concentration [mol/m^3]")>0
+
+                                
+                            end
+                        end
+
+                    else                    %-- Deffault plot output condition
+                        fprintf(['Deffault 2D plot output option intialized and run\n'])
+                        fig = figure('Name','SPM 2D Data plots','NumberTitle','off');
+                        fig.Position = [5 50 1270 580];
+
+                        %Time vs Current Plot
+                        subplot(1,2,1)
+                            plot(t,I_app,'r',LineWidth=2)
+                            xlabel('Time [s]','interpreter','latex');
+                            ylabel('Current [A]','interpreter','latex');
+                            title('$$\textbf{Experiment Current}$$','interpreter','latex');
+                            xlim([t(1) t(end)]);
+                            
+                        
+
+                        %Time vs Concentration at Positive Particle surface boundary
+                        subplot(1,2,2)
+                            plot(t,Csp(:,end),'g',LineWidth=2)
+                            xlabel('Time [s]','interpreter','latex');
+                            ylabel('$$Concentration   \frac{mol}{m^3}$$','interpreter','latex');
+                            title('$$\textbf{Concentration at Positive Particle surface boundary } \frac{mol}{m^3}$$','interpreter','latex');
+                            xlim([t(1) t(end)]);
+                            ylim([min(Csp(:,end))-0.1*max(Csp(:,end)) 1.1*max(Csp(:,end))]);
+                    end
+                else
+                    fprintf(['Any of the solution struct fields is missing, check the functions and the check outputs below:\n'])
+                    time_check
+                    Iapp_check
+                    Csp_check
+                end
+    toc
+    fprintf(['\n\n']) 
+
+end
+
+% Create ValueChangedFcn callback
+function updateGraph(sld,SOL_struct,DOM_struct,fig,ax)
+
+        %--- Extract solutions
+                SOL_cell=struct2cell(SOL_struct);
+                [t,I_app,Csp] = SOL_cell{:};
+
+                DOM_cell=struct2cell(DOM_struct);
+                [Rsp,Lsp] = DOM_cell{:};
+        
+        %--- Update graphs
+                Sld_Val = find(t>=sld.Value,1) ;
+                p=plot(ax,Rsp(2:end),Csp(Sld_Val,:));
+
+end

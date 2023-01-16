@@ -1,5 +1,9 @@
 clc
+
 clear all
+
+close()
+
 tic
 
 Model = struct;
@@ -18,3 +22,9 @@ Model.Experiment = SPM_Experiment("Deffault", ...
 
 Model.Solution = SPM_FVM(Model.Param_Val,Model.Domain,Model.Experiment,"From initial 100% SOC");
 
+
+Plot_2D_Solution(Model.Solution,Model.Domain)
+
+Plot_2D_Solution(Model.Solution,Model.Domain,"X-Averaged Positive Particle Concentration [mol/m^3]")
+
+Model.Plot=Plot_3D_Solution(Model.Solution,Model.Domain,"2%"); %Resolution: 1-3%
